@@ -1,7 +1,7 @@
 #ifndef _rbfm_h_
 #define _rbfm_h_
 
-#include <string.h>
+#include <string>
 #include <vector>
 #include <stdlib.h>
 #include <stdio.h>
@@ -33,7 +33,7 @@ struct Attribute {
 //slot directory: slot cell
 typedef struct  {
 	int offset;
-	unsigned length;
+	int length;
 } SlotCell;
 
 // Comparison Operator (NOT needed for part 1 of the project)
@@ -93,6 +93,7 @@ public:
   //  2) For int and real: use 4 bytes to store the value;
   //     For varchar: use 4 bytes to store the length of characters, then store the actual characters.
   //  !!!The same format is used for updateRecord(), the returned data of readRecord(), and readAttribute()
+
   RC insertRecord(FileHandle &fileHandle, const vector<Attribute> &recordDescriptor, const void *data, RID &rid);
 
   RC readRecord(FileHandle &fileHandle, const vector<Attribute> &recordDescriptor, const RID &rid, void *data);
@@ -102,6 +103,11 @@ public:
 
   // This method is used to get length of data
   int getDataLength(const vector<Attribute> &recordDescriptor, const void *data);
+
+  // This method is used to get number of record elements
+  int getNumberOfRecordElements(const vector<Attribute> &recordDescriptor, const void *data);
+
+  RC recordHeaderMaker(const vector<Attribute> &recordDescriptor, const void *data, void *recordHeader);
 /**************************************************************************************************************************************************************
 ***************************************************************************************************************************************************************
 IMPORTANT, PLEASE READ: All methods below this comment (other than the constructor and destructor) are NOT required to be implemented for part 1 of the project
@@ -141,9 +147,6 @@ protected:
 private:
   static RecordBasedFileManager *_rbf_manager;
   PagedFileManager * pfm;
-  //To do this, you may want to have a "system" vs. "user" flag in your table RBF file
-  //so you can distinguish "system tables" from "user tables"
-  //and make it illegal to do anything but reading of "system" tables through the RM layer.
 };
 
 #endif
